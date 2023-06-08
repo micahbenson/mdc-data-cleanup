@@ -179,7 +179,7 @@ def test_super_saturday():
     )
 
 def test_clean_2021_pic(): 
-    name = "Super Saturday"
+    name = "2021 Pic Attendance"
     df = pd.DataFrame(
                 {
                     name: ["yes", "no", pd.NA, "yes https://www.dropbox.com/s/ngnpdgqnm7mfpuy/_MG_2255%281%29.JPG?dl=0"],
@@ -195,6 +195,38 @@ def test_clean_2021_pic():
         soln
     )
 
+def test_weight_loss(): 
+    name = "Weight Loss"
+    df = pd.DataFrame(
+                {
+                    name: ["yes", pd.NA],
+                }
+            )
+    soln = pd.DataFrame(
+                {
+                    name: ["yes", "no"],
+                }
+            )
+    pd.testing.assert_frame_equal(
+        clean.clean_2021_pic(df, name),
+        soln
+    )
 
+def test_high_risk(): 
+    name = "High Risk"
+    df = pd.DataFrame(
+                {
+                    name: ["yes", pd.NA, "depression", "depression 1", "high risk family"],
+                }
+            )
+    soln = pd.DataFrame(
+                {
+                    name: ["yes", "no", "yes", "yes", "yes"],
+                }
+            )
+    pd.testing.assert_frame_equal(
+        clean.clean_high_risk(df, name),
+        soln
+    )
 
 
