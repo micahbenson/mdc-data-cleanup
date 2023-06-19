@@ -147,13 +147,13 @@ def test_is_child():
     new = "is_child"
     df = pd.DataFrame(
                 {
-                    name: ["a", "1", "b", "2"],
+                    name: ["child 1", "primary", "adult 1", "child 3"],
                 }
             )
     soln = pd.DataFrame(
                 {
-                    name: ["a", "1", "b", "2"],
-                    new: ["yes", "no", "yes", "no"]
+                    name: ["child 1", "primary", "adult 1", "child 3"],
+                    new: ["yes", "no", "no", "yes"]
                 }
             )
     pd.testing.assert_frame_equal(

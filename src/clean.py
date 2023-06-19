@@ -32,7 +32,7 @@ def clean_spring_semester_2023(df, name):
 
 def is_child(df, name, new): 
     col = df[name]
-    col = col.apply(lambda x: "no" if str.isnumeric(x) else "yes")
+    col = col.apply(lambda x: "yes" if "child" in str(x) else "no")
     df[new] = col
     return df
 
@@ -70,21 +70,56 @@ def clean_high_risk(df, name):
     df[name] = col
     return df
 
-df = pd.read_excel('/Users/micahbenson/Downloads/mdc_main_data.xlsx', dtype=str)
-drop = ['Picture 2021', 'Picture 2022', 'Ticket Number', "Relacion", "# of botellas", 
-        "Feria de medico 5/21", "Feria de medico 11/21", "4/22 med fair", 
-        "Invite april 2023 med fair", "Family never attended a medical fair"]
-df = df.drop(columns=drop)
-df = text_clean(df)
 
-df = clean_fall_semester_2022(df, "Fall Semester 2022")
-df = clean_spring_semester_2023(df, "Spring Semester 2023")
-df = clean_summer_school_2022(df, "Summer School 2022")
-df = clean_super_saturday(df, "Super Saturday")
-df = clean_weight_loss(df, "Weight Loss")
-df = clean_2021_pic(df, "Attended Pic Day 2021")
-df = clean_dropout(df, "Dropped Out Of School", "Is Dropout")
+def clean_all(df):
+    drop = [
+        'Picture 2021', #link to a pic in dropbox
+        'Picture 2022', 
+        'Ticket Number', #not important
+        "# of botellas", 
+        "Feria de medico 5/21", #Duplicate
+        "Feria de medico 11/21", #Duplicate
+        "4/22 med fair", #Duplicate
+        "Invite april 2023 med fair", #Duplicate
+        "Family never attended a medical fair", 
+        "EDAD", #Should just be calculated after data extraction, 
+        "adult or child number", 
+        "Attends School", #empty
+        "Attendance", #meaningless
+        ]
 
-#df = is_child(df, "Adult Or Child Number", "Is Child")
+    df = df.drop(columns=drop) #Drop unneded columns
+    df = df.drop(df.index[543:549]) #Remove empty rows
+    df = text_clean(df) #Clean text format
 
-print(df)
+    df = clean_fall_semester_2022(df, "Fall Semester 2022")
+    df = clean_spring_semester_2023(df, "Spring Semester 2023")
+    df = clean_summer_school_2022(df, "Summer School 2022")
+    df = clean_super_saturday(df, "Super Saturday")
+    df = clean_weight_loss(df, "Weight Loss")
+    df = clean_2021_pic(df, "Attended Pic Day 2021")
+    df = clean_dropout(df, "Dropped Out Of School", "Is Dropout")
+    df = is_child(df, "Relacion", "Is Child")
+
+    #Add dictionary of new col names... 
+    new_col_names = {
+        "Family Water Number" : "Family ID",
+        "Unique Family Number" : "Individual ID",
+        "Relacion" : "Family Role",
+        "Fecha De Ignicio Agua" : "Water Start Date",
+        "Dropped Out Of School" : "School Status", 
+        "Work Program" : "Work Program",
+        "Señas" : "Dreams", 
+        "Género" : "Gender",
+        "Paciente" : "Name", 
+        "Fecha Nacimiento" : "Birthdate", 
+        "Numero De Telefono" : "Phone Number",
+        "Domicilio": "Address"
+    }
+
+    df = df.rename(columns = new_col_names)
+    return df
+
+
+data = pd.read_excel('/Users/micahbenson/Downloads/mdc_main_data.xlsx', dtype=str)
+df = clean_all(data)
