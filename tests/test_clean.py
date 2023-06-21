@@ -24,7 +24,7 @@ from src import clean
 def test_text_clean(): 
     df = pd.DataFrame(
                 {
-                    "fav\nfruit  ": ["Apples", " baNnAnas", " blue Berries"],
+                    "fav fruit  ": ["Apples", " baNnAnas", " blue Berries"],
                     "fAv VEG": ["CarroT", "OlIVE", "pepper"],
                 }
             )
@@ -226,6 +226,74 @@ def test_high_risk():
             )
     pd.testing.assert_frame_equal(
         clean.clean_high_risk(df, name),
+        soln
+    )
+
+def test_heart(): 
+    name = "Heart"
+    df = pd.DataFrame(
+                {
+                    name: ["r", "i", "x", pd.NA],
+                }
+            )
+    soln = pd.DataFrame(
+                {
+                    name: ["regular", "irregular", "x", pd.NA],
+                }
+            )
+    pd.testing.assert_frame_equal(
+        clean.clean_heart(df, name),
+        soln
+    )
+
+def test_clean_flouride(): 
+    df = pd.DataFrame(
+                {
+                    "A": ["y", "yes", "ok"],
+                    "B" : ["no", " ", pd.NA]
+                }
+            )
+    soln = pd.DataFrame(
+                {
+                    "A" : ["yes", "yes", "ok"],
+                    "B" : ["no", " ", pd.NA]
+                }
+            )
+    pd.testing.assert_frame_equal(
+        clean.clean_flouride(df, ["A", "B"]),
+        soln
+    )
+
+def test_hygiene(): 
+    df = pd.DataFrame(
+                {
+                    "A" : ["p", "f", "g", "e", pd.NA],
+                }
+            )
+    soln = pd.DataFrame(
+                {
+                    "A" : ["poor", "fair", "good", "excellent", pd.NA],
+                }
+            )
+    pd.testing.assert_frame_equal(
+        clean.clean_hygiene(df, "A"),
+        soln
+    )
+    
+
+def test_cavity_risk(): 
+    df = pd.DataFrame(
+                {
+                    "Cavity Risk" : ["l", "m", "h", pd.NA],
+                }
+            )
+    soln = pd.DataFrame(
+                {
+                    "Cavity Risk" : ["low", "medium", "high", pd.NA],
+                }
+            )
+    pd.testing.assert_frame_equal(
+        clean.clean_cavity_risk(df, "Cavity Risk"),
         soln
     )
 

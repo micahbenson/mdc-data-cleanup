@@ -58,13 +58,13 @@ def med_april_2023(df):
         "4/23 LMP" : "LMP",
         "4/23 alcohol" : "Alcohol",
         "4/23 smoke" : "Smoke",
-        "4/23  Medical Notes" : "Medical Notes", 
+        "4/23 Medical Notes" : "Medical Notes", 
         "4/23 Flouride" : "Flouride",
         "4/23 Oral Hygiene" : "Oral Hygiene",
         "4/23 Cavity Risk" : "Cavity Risk",
         "4/23 Cavitys" : "Cavities",
         "4/23 Fractures" : "Fractures",
-        "4/23 Missing" : "Missing Teeth",	
+        "4/23 Missing" : "Missing",	
         "4/23 SDF" : "SDF", 
         "4/23 Sealant" : "Sealant",
         "4/23 Filling" : "Filling",
@@ -73,7 +73,7 @@ def med_april_2023(df):
     }
 
     df_april_2023 = df_april_2023.rename(columns = new_col_names)
-    df_april_2023["Date"] = "04/01/23"
+    df_april_2023["Date"] = "04/01/2023"
     df_april_2023["Individual ID"] = df["Unique family number"]
     df_april_2023["Family ID"] = df["Family Water Number"]
 
@@ -97,7 +97,7 @@ def med_nov_2022(df):
         "11/22 Pulse" : "Pulse",
         "11/22 NOTES" : "Medical Notes",
         "11/22 Flouride" : "Flouride",
-        "11/22 Oral Hygiene" : "Hygiene",
+        "11/22 Oral Hygiene" : "Oral Hygiene",
         "11/22 Cavity Risk" : "Cavity Risk",	
         "11/22 Cavitys" : "Cavities",
         "11/22 Fractures" : "Fractures",
@@ -109,7 +109,7 @@ def med_nov_2022(df):
     }
 
     df_nov_2022 = df_nov_2022.rename(columns = new_col_names)
-    df_nov_2022["Date"] = "11/01/22"
+    df_nov_2022["Date"] = "11/01/2022"
     df_nov_2022["Individual ID"] = df["Unique family number"]
     df_nov_2022["Family ID"] = df["Family Water Number"]
 
@@ -123,16 +123,31 @@ def med_april_2022(df):
     new_col_names = {
         "4/22 Weight" : "Weight",
         "4/22 Height" : "Height",
-        "BLD Su" : "Blood Sugar",
-        "P" : "Pulse", #Check this with Nikita... 
-        "NOTES" : "Medical Notes",	
-        "Cavitys" : "Cavities",	
+        "4/22 BMI" : "BMI", 
+        "4/22 BLD Su" : "Blood Sugar", 
+        "4/22 Heart" : "Heart",
+        "4/22 Lung" : "Lung",
+        "4/22 BP" : "Blood Pressure",
+        "4/22 Su/Drinks/Day" : "Su/Drinks/Day",
+        "4/22 O2" : "O2", 
+        "4/22 P" : "Pulse",
+        "4/22 NOTES" : "Medical Notes", 
+        "4/22 Flouride" : "Flouride",
+        "4/22 Oral Hygiene" : "Oral Hygiene",
+        "4/22 Cavity Risk" : "Cavity Risk",	
+        "4/22 Cavitys" : "Cavities",
+        "4/22 Fractures" : "Fractures",
+        "4/22 Missing" : "Missing",
+        "4/22 SDF" : "SDF",
+        "4/22 Sealant" : "Sealant",
+        "4/22 Filling" : "Filling",
         "4/22 Notes" : "Dental Notes",
-        "BP" : "Blood Pressure"
+        "4/22 Glasses" : "Glasses",
+        "4/22 Letters" : "Letters"
     }
 
     df_april_2022 = df_april_2022.rename(columns = new_col_names)
-    df_april_2022["Date"] = "04/01/22"
+    df_april_2022["Date"] = "04/01/2022"
 
     df_april_2022["Individual ID"] = df["Unique family number"]
     df_april_2022["Family ID"] = df["Family Water Number"]
@@ -151,7 +166,7 @@ def med_nov_2021(df):
         "11/21 - BMI" : "BMI",
         "11/21 - Blood Sugar" : "Blood Sugar",
         "11/21 - Breathing/heart/lung/abdomen" : "??",
-        "11/21 - Sugar Drinks Per Day" : "Su/Drinks/Day",
+        "11/21 - Sugar drinks per day" : "Su/Drinks/Day",
         "11/21 - med, vaccine, risk assess" : "?",	
         "11/21 - medical notes" : "Medical Notes",
         "11/21 - # of cavities" : "Cavities",
@@ -169,7 +184,7 @@ def med_nov_2021(df):
     }
 
     df_nov_2021 = df_nov_2021.rename(columns=new_col_names)
-    df_nov_2021["Date"] = "11/01/21"
+    df_nov_2021["Date"] = "11/01/2021"
 
     df_nov_2021["Individual ID"] = df["Unique family number"]
     df_nov_2021["Family ID"] = df["Family Water Number"]
@@ -209,7 +224,7 @@ def med_may_2021(df):
     }
 
     df_may_2021 = df_may_2021.rename(columns=new_col_names)
-    df_may_2021["Date"] = "05/01/21"
+    df_may_2021["Date"] = "05/01/2021"
 
     df_may_2021["Individual ID"] = df["Unique family number"]
     df_may_2021["Family ID"] = df["Family Water Number"]
@@ -219,11 +234,15 @@ def med_may_2021(df):
 
 def normalize_all(df): 
 
+    df = df.apply(lambda x: x.str.lower().str.strip() if x.dtype == object else x)
+    df = clean.clean_med(df)
+
     april_2023 = med_april_2023(df)
     april_2023 = clean.text_clean(april_2023)
 
     nov_2022 = med_nov_2022(df)
     nov_2022 = clean.text_clean(nov_2022)
+
 
     april_2022 = med_april_2022(df)
     april_2022 = clean.text_clean(april_2022)
@@ -271,9 +290,9 @@ def normalize_all(df):
         med_fairs.to_excel(writer, sheet_name='med_fairs')
 
 
-data = pd.read_excel('/Users/micahbenson/Downloads/mdc_main_data.xlsx', dtype=str)
+data = pd.read_excel('/Users/micahbenson/mdc/mdc_nikita.xlsx', sheet_name="mdc_nikita", dtype=str)
 
-print(data.dtypes)
+print(data.shape)
 
 ## TO DO
 # May 2021 data import

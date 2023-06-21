@@ -3,7 +3,7 @@ import numpy as np
 
 def text_clean(df): 
     df = df.apply(lambda x: x.str.lower().str.strip() if x.dtype == object else x)
-    df.columns = df.columns.str.title().str.replace("\n", " ").str.strip()
+    df.columns = df.columns.str.title().str.strip()
     return df
 
 def encode_if_word(df, cols, word, yes, no): 
@@ -68,6 +68,39 @@ def clean_high_risk(df, name):
     list = ["yes", "depression", "depression 1", "high risk family"]
     col = col.apply(lambda x: "yes" if str(x) in list else "no")
     df[name] = col
+    return df
+
+
+def clean_heart(df, name): 
+    col = df[name]
+    col = col.apply(lambda x: "regular" if str(x) == "r" else("irregular" if str(x) == "i" else x))
+    df[name] = col
+    return df
+
+def clean_flouride(df, name_list): 
+    cols = df[name_list]
+    cols = cols.applymap(lambda x: "yes" if str(x) == "y" else "yes" if str(x) == "yes" else x)
+    df[name_list] = cols
+    return df
+
+
+def clean_hygiene(df, name): 
+    col = df[name]
+    col = col.apply(lambda x: "poor" if str(x) == "p" else "fair" if str(x) == "f" else "good" if str(x) == "g" else "excellent" if str(x) == "e" else x)
+    df[name] = col
+    return df
+
+def clean_cavity_risk(df, name): 
+    col = df[name]
+    col = col.apply(lambda x: "low" if str(x) == "l" else "medium" if str(x) == "m" else "high" if str(x) == "h" else x)
+    df[name] = col
+    return df
+
+def clean_med(df): 
+    df = clean_heart(df, "4/22 Heart")
+    df = clean_flouride(df, ["11/21 Flouride", "11/22 Flouride", "4/23 Flouride", "Flouride"])
+    df = clean_hygiene(df, "4/22 Oral Hygiene")
+    df = clean_cavity_risk(df, "4/22 Cavity Risk")
     return df
 
 
