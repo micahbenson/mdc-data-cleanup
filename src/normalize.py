@@ -279,20 +279,26 @@ def normalize_all(df):
               else float((re.sub(r'[^.\d]', '', x))) if re.sub(r'[^\d]', '', x).isnumeric() else pd.NA)
 
 
-    with pd.ExcelWriter('~/mdc/mdc_people.xlsx') as writer:  
-        people_df.to_excel(writer, sheet_name='people')
-        school_df.to_excel(writer, sheet_name='school')
-        april_2023.to_excel(writer, sheet_name='med_4_23')
-        nov_2022.to_excel(writer, sheet_name='med_11_22')
-        april_2022.to_excel(writer, sheet_name='med_4_22')
-        nov_2021.to_excel(writer, sheet_name='med_11_21')
-        may_2021.to_excel(writer, sheet_name='med_05_21')
-        med_fairs.to_excel(writer, sheet_name='med_fairs')
+
+    # with pd.ExcelWriter('~/mdc/mdc_people.xlsx') as writer:  
+    #     people_df.to_excel(writer, sheet_name='people')
+    #     school_df.to_excel(writer, sheet_name='school')
+    #     april_2023.to_excel(writer, sheet_name='med_4_23')
+    #     nov_2022.to_excel(writer, sheet_name='med_11_22')
+    #     april_2022.to_excel(writer, sheet_name='med_4_22')
+    #     nov_2021.to_excel(writer, sheet_name='med_11_21')
+    #     may_2021.to_excel(writer, sheet_name='med_05_21')
+    #     med_fairs.to_excel(writer, sheet_name='med_fairs')
+    return people_df, school_df, med_fairs
 
 
 data = pd.read_excel('/Users/micahbenson/mdc/mdc_nikita.xlsx', sheet_name="mdc_nikita", dtype=str)
 
+#normalize_all(data)
+
 print(data.shape)
+
+
 
 ## TO DO
 # May 2021 data import
@@ -301,7 +307,6 @@ print(data.shape)
 
 
 
-normalize_all(data)
 
 
 

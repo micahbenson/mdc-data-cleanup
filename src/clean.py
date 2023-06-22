@@ -98,7 +98,7 @@ def clean_cavity_risk(df, name):
 
 def clean_med(df): 
     df = clean_heart(df, "4/22 Heart")
-    df = clean_flouride(df, ["11/21 Flouride", "11/22 Flouride", "4/23 Flouride", "Flouride"])
+    df = clean_flouride(df, ["11/21 Flouride", "11/22 Flouride", "4/23 Flouride", "4/22 Flouride"])
     df = clean_hygiene(df, "4/22 Oral Hygiene")
     df = clean_cavity_risk(df, "4/22 Cavity Risk")
     return df
