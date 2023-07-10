@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 def text_clean(df): 
-    df = df.apply(lambda x: x.str.lower().str.strip() if x.dtype == object else x)
+    df = df.apply(lambda x: x.str.lower().str.strip() if x.dtype == str else x)
     df.columns = df.columns.str.title().str.strip()
     return df
 
@@ -70,7 +70,6 @@ def clean_high_risk(df, name):
     df[name] = col
     return df
 
-
 def clean_heart(df, name): 
     col = df[name]
     col = col.apply(lambda x: "regular" if str(x) == "r" else("irregular" if str(x) == "i" else x))
@@ -103,6 +102,11 @@ def clean_med(df):
     df = clean_cavity_risk(df, "4/22 Cavity Risk")
     return df
 
+def clean_family(df, name):
+    col = df[name]
+    col = col.apply(lambda x: int(str.split(str(x), "family ")[1]) if "family " in str(x) else pd.NA)
+    df[name] = col
+    return df
 
 def clean_all(df):
     drop = [
@@ -133,11 +137,12 @@ def clean_all(df):
     df = clean_2021_pic(df, "Attended Pic Day 2021")
     df = clean_dropout(df, "Dropped Out Of School", "Is Dropout")
     df = is_child(df, "Relacion", "Is Child")
+    #df = clean_family(df, "Family Water Number")
 
     #Add dictionary of new col names... 
     new_col_names = {
-        "Family Water Number" : "Family ID",
-        "Unique Family Number" : "Individual ID",
+        "Family Water Number" : "Family Id",
+        "Unique Family Number" : "Individual Id",
         "Relacion" : "Family Role",
         "Fecha De Ignicio Agua" : "Water Start Date",
         "Dropped Out Of School" : "School Status", 
@@ -149,10 +154,14 @@ def clean_all(df):
         "Numero De Telefono" : "Phone Number",
         "Domicilio": "Address"
     }
-
+    
     df = df.rename(columns = new_col_names)
+
+    #adjust datatypes: 
+    #df["Individual Id"] = df["Individual Id"].apply(lambda x: int(x) if pd.notna(x) else x)
+
     return df
 
+data = pd.read_excel('/Users/micahbenson/mdc/mdc_nikita.xlsx', sheet_name="mdc_nikita", dtype=str)
 
-data = pd.read_excel('/Users/micahbenson/Downloads/mdc_main_data.xlsx', dtype=str)
 df = clean_all(data)

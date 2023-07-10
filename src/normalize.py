@@ -2,14 +2,15 @@ import clean
 import pandas as pd
 import numpy as np
 import re
+import datetime
 
 
 def school(df): 
     children = df[df["Is Child"]=="yes"]
 
     school_df = children[[
-        "Individual ID", 
-        "Family ID",
+        "Individual Id", 
+        "Family Id",
         "School Status", 
         "Is Dropout", 
         "Fall Semester 2022", 
@@ -20,8 +21,8 @@ def school(df):
 
 def people(df): 
     people_df = df[[
-        "Family ID", 
-        "Individual ID", 
+        "Family Id", 
+        "Individual Id", 
         "Name", 
         "Gender", 
         "Birthdate",
@@ -73,9 +74,9 @@ def med_april_2023(df):
     }
 
     df_april_2023 = df_april_2023.rename(columns = new_col_names)
-    df_april_2023["Date"] = "04/01/2023"
-    df_april_2023["Individual ID"] = df["Unique family number"]
-    df_april_2023["Family ID"] = df["Family Water Number"]
+    df_april_2023["Date"] = datetime.date(2023, 4, 1)
+    df_april_2023["Individual Id"] = df["Unique family number"]
+    df_april_2023["Family Id"] = df["Family Water Number"]
 
     return df_april_2023
 
@@ -109,9 +110,9 @@ def med_nov_2022(df):
     }
 
     df_nov_2022 = df_nov_2022.rename(columns = new_col_names)
-    df_nov_2022["Date"] = "11/01/2022"
-    df_nov_2022["Individual ID"] = df["Unique family number"]
-    df_nov_2022["Family ID"] = df["Family Water Number"]
+    df_nov_2022["Date"] = datetime.date(2022, 11, 1)
+    df_nov_2022["Individual Id"] = df["Unique family number"]
+    df_nov_2022["Family Id"] = df["Family Water Number"]
 
     return df_nov_2022
 
@@ -121,8 +122,8 @@ def med_april_2022(df):
     df_april_2022.columns = df_april_2022.columns.str.strip()
 
     new_col_names = {
-        "4/22 Weight" : "Weight",
-        "4/22 Height" : "Height",
+        "4/22 Weight" : "Height",
+        "4/22 Height" : "Weight",
         "4/22 BMI" : "BMI", 
         "4/22 BLD Su" : "Blood Sugar", 
         "4/22 Heart" : "Heart",
@@ -147,10 +148,10 @@ def med_april_2022(df):
     }
 
     df_april_2022 = df_april_2022.rename(columns = new_col_names)
-    df_april_2022["Date"] = "04/01/2022"
+    df_april_2022["Date"] = datetime.date(2022, 4, 1)
 
-    df_april_2022["Individual ID"] = df["Unique family number"]
-    df_april_2022["Family ID"] = df["Family Water Number"]
+    df_april_2022["Individual Id"] = df["Unique family number"]
+    df_april_2022["Family Id"] = df["Family Water Number"]
 
     return df_april_2022
 
@@ -184,10 +185,10 @@ def med_nov_2021(df):
     }
 
     df_nov_2021 = df_nov_2021.rename(columns=new_col_names)
-    df_nov_2021["Date"] = "11/01/2021"
+    df_nov_2021["Date"] = datetime.date(2021, 11, 1)
 
-    df_nov_2021["Individual ID"] = df["Unique family number"]
-    df_nov_2021["Family ID"] = df["Family Water Number"]
+    df_nov_2021["Individual Id"] = df["Unique family number"]
+    df_nov_2021["Family Id"] = df["Family Water Number"]
 
     return df_nov_2021
 
@@ -224,17 +225,22 @@ def med_may_2021(df):
     }
 
     df_may_2021 = df_may_2021.rename(columns=new_col_names)
-    df_may_2021["Date"] = "05/01/2021"
+    df_may_2021["Date"] = datetime.date(2021, 5, 1)
 
-    df_may_2021["Individual ID"] = df["Unique family number"]
-    df_may_2021["Family ID"] = df["Family Water Number"]
+    df_may_2021["Individual Id"] = df["Unique family number"]
+    df_may_2021["Family Id"] = df["Family Water Number"]
 
     return df_may_2021
 
 
 def normalize_all(df): 
 
+    #adjust datatypes: 
     df = df.apply(lambda x: x.str.lower().str.strip() if x.dtype == object else x)
+
+    #df["Unique family number"] = df["Unique family number"].apply(lambda x: int(x) if pd.notna(x) else x)
+    #df = clean.clean_family(df, "Family Water Number")
+
     df = clean.clean_med(df)
 
     april_2023 = med_april_2023(df)

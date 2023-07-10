@@ -297,4 +297,18 @@ def test_cavity_risk():
         soln
     )
 
-
+def test_family():
+    df = pd.DataFrame(
+        {
+            "Family Id" : ["family 01", "family 123", pd.NA]
+        }
+    )
+    soln = pd.DataFrame(
+        {
+            "Family Id" : [1, 123, pd.NA]
+        }
+    )
+    pd.testing.assert_frame_equal(
+        clean.clean_family(df, "Family Id"),
+        soln
+    )
