@@ -137,7 +137,7 @@ def clean_all(df):
     df = clean_2021_pic(df, "Attended Pic Day 2021")
     df = clean_dropout(df, "Dropped Out Of School", "Is Dropout")
     df = is_child(df, "Relacion", "Is Child")
-    #df = clean_family(df, "Family Water Number")
+    df = clean_family(df, "Family Water Number")
 
     #Add dictionary of new col names... 
     new_col_names = {
@@ -158,7 +158,7 @@ def clean_all(df):
     df = df.rename(columns = new_col_names)
 
     #adjust datatypes: 
-    #df["Individual Id"] = df["Individual Id"].apply(lambda x: int(x) if pd.notna(x) else x)
+    df["Individual Id"] = df["Individual Id"].apply(lambda x: int(x) if pd.notna(x) else x)
 
     return df
 

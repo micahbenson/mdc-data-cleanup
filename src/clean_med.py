@@ -8,14 +8,14 @@ data = pd.read_excel('/Users/micahbenson/mdc/mdc_nikita.xlsx', sheet_name="mdc_n
 
 people, school, med = normalize.normalize_all(data)
 
-#why doesn't this work??
-#med.index["Individual Id"] = med.index["Individual Id"].apply(lambda x: 0 if pd.isna(x) else x)
-#med = med.drop(0, level="Individual Id")
-
 med = med.reset_index()
 med = med.dropna(subset="Individual Id")
+
+med["Individual Id"] = med["Individual Id"].apply(lambda x: int(x) if pd.notna(x) else x)
+med["Family Id"]= med["Family Id"].apply(lambda x: int(str.split(str(x), "family ")[1]) if "family " in str(x) else pd.NA)
+med = med.sort_values(["Individual Id", "Date"])
+
 med = med.set_index(["Individual Id", "Date"])
-#print(~med.index.get_level_values("Individual Id").isna())
 
 #Function to convert units
 def convert_units(med, dates, col, conversion):
@@ -42,11 +42,6 @@ med = convert_units(med, ft_to_cm_dates, "Height", ft_to_cm)
 
 #Check bmi
 med["Bmi Check"] = med["Weight"] / (med["Height"]/100)**2
-
-#Datatype adjustments
-#med["Individual Id"] = med["Individual Id"].apply(lambda x: int(x) if pd.notna(x) else x)
-#med = clean.clean_family(med, "Family Water Number")
-
 
 with pd.ExcelWriter('~/mdc/mdc_clean.xlsx') as writer:  
     people.to_excel(writer, sheet_name='people')
