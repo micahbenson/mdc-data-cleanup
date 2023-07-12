@@ -17,6 +17,14 @@ med = med.sort_values(["Individual Id", "Date"])
 
 med = med.set_index(["Individual Id", "Date"])
 
+new = pd.read_excel('/Users/micahbenson/mdc/Altered_Cols.xlsx')
+
+new["Date"] = new["Date"].dt.date
+
+new = new.set_index(["Individual Id", "Date"])
+
+med = med.merge(new, on=["Individual Id", "Date"])
+print(med)
 #Function to convert units
 def convert_units(med, dates, col, conversion):
     for date in dates:
