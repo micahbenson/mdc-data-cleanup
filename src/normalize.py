@@ -179,9 +179,15 @@ def med_nov_2021(df):
         "11/21 - Cavities Risk" : "Cavity Risk",
         "11/21 dental notes" : "Dental Notes",
         "11/21 - reading glasses" : "Reading Glasses",
-        "11/21 prescription glasses" : "Perscription Glasses",
+        "11/21 prescription glasses" : "Glasses",
         "11/21 vision notes" : "Vision Notes",
-        "11/21 Flouride" : "Flouride"
+        "11/21 Flouride" : "Flouride",
+        "11/21 Exercise" : "Exercise",
+        "11/21 risk" : "Risk",
+        "11/21 Vision" : "Vision",
+        "11/21 Received Silver Dioxide Flouride (SDF)" : "Sdf",
+        "11/21 - Breathing/heart/lung/abdomen" : "Body",
+        "11/21 - med, vaccine, risk assess" : "Medication"
     }
 
     df_nov_2021 = df_nov_2021.rename(columns=new_col_names)
@@ -219,7 +225,7 @@ def med_may_2021(df):
         "May 2021 # of Baby Cavities": "Baby Cavities",	
         "May 2021 # of Adult cavities" : "Adult Cavities",
         "May 2021 # of Missing Teeth" : "Missing",	
-        "Total cavities" : "Cavities",
+        "May 2021 Total cavities" : "Cavities",
         "May 2021 Recent Dentist Visit?" : "Recent Dentist Visit",
         "May 2021 Other Dental Needs" : "Dental Notes",
     }
