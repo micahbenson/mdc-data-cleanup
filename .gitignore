@@ -4,3 +4,4 @@ poetry.lock
 med.csv
 people.csv
 combined.csv
+data
