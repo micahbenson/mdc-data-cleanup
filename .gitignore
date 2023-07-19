@@ -1,3 +1,5 @@
 __pycache__ 
 *.pyc
 poetry.lock
+med.csv
+people.csv

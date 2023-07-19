@@ -221,7 +221,7 @@ def med_may_2021(df):
         "May 2021 Breathing" : "Breathing", 
         "May 2021 Meds Despensed" : "Meds Despensed",
         "May 2021 What meds despensed and dosge" : "Meds Type And Dose", 
-        "May 2021 Follow-up" : "Follow Up",
+        "May 2021 Follow-up" : "Medical Notes",
         "May 2021 # of Baby Cavities": "Baby Cavities",	
         "May 2021 # of Adult cavities" : "Adult Cavities",
         "May 2021 # of Missing Teeth" : "Missing",	

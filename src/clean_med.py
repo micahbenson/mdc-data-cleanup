@@ -24,8 +24,8 @@ new["Date"] = new["Date"].dt.date
 
 new = new.set_index(["Individual Id", "Date"])
 
-all_new = new.drop(["Lung", "Heart", "Abdomen"], axis="columns")
-to_update = new.drop(["Blood Pressure 1", "Blood Pressure 2", "Blood Pressure 3", "Soda L/Wk"], axis="columns")
+all_new = new.drop(["Lung", "Heart", "Abdomen", "Pulse"], axis="columns")
+to_update = new.drop(["Blood Pressure 1", "Blood Pressure 2", "Blood Pressure 3", "Soda"], axis="columns")
 
 med = med.merge(all_new, on=["Individual Id", "Date"])
 med.update(to_update)
@@ -54,23 +54,42 @@ med = convert_units(med, lbs_to_kg_dates, "Weight", lbs_to_kg)
 med = convert_units(med, in_to_cm_dates, "Height", in_to_cm)
 med = convert_units(med, ft_to_cm_dates, "Height", ft_to_cm)
 
+#Make pd.NA where should be
+med = med.where(med != "?", pd.NA)
+med = med.where(med != "not taken", pd.NA)
+
 #Calculate bmi
 med["Bmi"] = med["Weight"] / (med["Height"]/100)**2
 
 #Calc sugar grams per day
-med["Soda Sugar g/day"] = med["Soda L/Wk"] * 108 / 7
+med["Soda Sugar"] = med["Soda"] * 108 / 7
 
 #Clean glasses column 
-med["Glasses"] = med["Glasses"].apply(lambda x: "yes" if "y" in str(x) else x)
+med["Glasses"] = med["Glasses"].apply(lambda x: "yes" if "y" in str(x) else "yes" if str(x).isnumeric() else "no")
 
 #Clean Abdomen 
-med["Abdomen"] = med["Abdomen"].apply(lambda x: "normal" if len(str(x)) <= 2 else x)
+med["Abdomen"] = med["Abdomen"].apply(lambda x: "healthy" if str(x) == "0" else x)
 
 #Clean Risk 
 med["Risk"] = med["Risk"].apply(lambda x: "yes" if str(x) == "risk" else x)
 
-#Rootips 
+#Clean Rootips 
 med["Rootips"] = med["Rootips"].apply(lambda x: int(x) if pd.notna(x) else x)
+
+#Clean Safe Risk Smoke Alcohol Fast
+med[["Safe", "Risk", "Smoke", "Alcohol", "Fast"]] = med[["Safe", "Risk", "Smoke", "Alcohol", "Fast"]].applymap(lambda x: pd.NA if pd.isna(x) else "no" if "no" in str(x) else "yes")
+
+#Clean cavity risk
+med["Cavity Risk"] = med["Cavity Risk"].apply(lambda x: "medium" if "m" in str(x) else "medium" if "fair" in str(x) else x)
+
+#Clean oral hygiene 
+med["Oral Hygiene"] = med["Oral Hygiene"].apply(lambda x: "fair" if str(x) == "fair/good" else x)
+
+#Clean Vaccine
+med["Vaccine"] = med["Vaccine"].apply(lambda x: "yes all" if "yes" in str(x) and "all" in str(x) else "some past two years" if "2" in str(x) else x)
+
+#Replace 0s with "none"
+med[["Sealant", "Filling", "Extractions"]] = med[["Sealant", "Filling", "Extractions"]].where(med[["Sealant", "Filling", "Extractions"]] != "0", "none")
 
 to_drop = [
     "11/21 Blood Pressure", 
@@ -84,7 +103,10 @@ to_drop = [
     "Breathing", 
     "Blood Pressure", 
     "Su/Drinks/Day", 
-    "Family Id"
+    "Family Id", 
+    "Letters", 
+    "Sealant",
+    "Abdomen"
     ]
 
 med = med.drop(to_drop, axis="columns")
@@ -98,7 +120,6 @@ med = med[[
     "Pulse",
     "Heart",
     "Lung",
-    "Abdomen",
     "Blood Pressure 1",
     "Blood Pressure 2",
     "Blood Pressure 3",	
@@ -106,7 +127,6 @@ med = med[[
     "Medication",
     "Vaccine",
     "Lmp",
-    "Follow Up",
     "Medical Notes",
     "Cavities",
     "Cavity Risk",
@@ -116,17 +136,15 @@ med = med[[
     "Fractures",
     "Flouride",
     "Sdf",
-    "Sealant",
     "Filling",
     "Extractions",
     "Rootips",
     "Dental Notes",
     "Glasses",
-    "Letters",
     "Vision",
     "Vision Notes",
-    "Soda L/Wk",
-    "Soda Sugar g/day",
+    "Soda",
+    "Soda Sugar",
     "Exercise",
     "Fast",
     "Alcohol",
@@ -138,15 +156,60 @@ med = med[[
 people = people[people["Individual Id"].isin(med.index.get_level_values("Individual Id").to_list())]
 people = people.set_index("Individual Id")
 
-people = people.drop(["Name", "Address", "Phone Number", "Is Child"], axis="columns")
+def age(born):
+    today = datetime.date.today()
+    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
 #convert to date
-#people["Birthday"] = people["Birthdate"].dt.date
+people["Birthdate"] = pd.to_datetime(people["Birthdate"]).dt.date
+
+people["Age"] = people["Birthdate"].apply(age)
+
+#Remove numbers from children in family role
+people["Family Role"] = people["Family Role"].apply(lambda x: pd.NA if pd.isna(x) else str(x).split(" ")[0])
+
+#people["Is Child"] = np.where(people["Is Child"] == "yes", True, False)
+
+
+
+combined = med.reset_index().set_index("Individual Id").merge(people, on="Individual Id")
+combined = combined.drop("Age", axis="columns")
+
+def age_combined(date, birth):
+    return date.year - birth.year - ((date.month, date.day) < (birth.month, birth.day))
+
+dates = combined[["Date", "Birthdate"]]
+
+combined["Age At Fair"] = dates.apply(lambda x: age_combined(x["Date"], x["Birthdate"]), axis=1)
+
+combined = combined.reset_index().set_index(["Individual Id", "Date"]).sort_values(["Date", "Individual Id"])
+
+people = people.drop([
+    "Name", 
+    "Address", 
+    "Phone Number", 
+    "Is Child", 
+    "Birthdate"
+    ], 
+    axis="columns")
+combined = combined.drop([
+    "Name", 
+    "Address", 
+    "Phone Number", 
+    "Is Child", 
+    "Birthdate"
+    ], 
+    axis="columns")
 
 with pd.ExcelWriter('~/mdc/mdc_clean.xlsx') as writer:  
     people.to_excel(writer, sheet_name='people')
     #school.to_excel(writer, sheet_name='school')
     med.to_excel(writer, sheet_name='med_fairs')
+    combined.to_excel(writer, sheet_name='combined')
+
+med.to_csv('./data/med.csv')
+people.to_csv('./data/people.csv')
+combined.to_csv('./data/combined.csv')
 
 
 
