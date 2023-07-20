@@ -170,8 +170,6 @@ people["Family Role"] = people["Family Role"].apply(lambda x: pd.NA if pd.isna(x
 
 #people["Is Child"] = np.where(people["Is Child"] == "yes", True, False)
 
-
-
 combined = med.reset_index().set_index("Individual Id").merge(people, on="Individual Id")
 combined = combined.drop("Age", axis="columns")
 
