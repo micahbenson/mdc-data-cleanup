@@ -108,6 +108,7 @@ def clean_family(df, name):
     df[name] = col
     return df
 
+
 def clean_all(df):
     drop = [
         'Picture 2021', #link to a pic in dropbox
@@ -152,10 +153,11 @@ def clean_all(df):
         "Paciente" : "Name", 
         "Fecha Nacimiento" : "Birthdate", 
         "Numero De Telefono" : "Phone Number",
-        "Domicilio": "Address"
+        "Domicilio": "Address",
+        "Relationship to primary": "Relationship To Primary",
     }
     
-    df = df.rename(columns = new_col_names)
+    df = df.rename(columns = new_col_names)    
 
     #adjust datatypes: 
     df["Individual Id"] = df["Individual Id"].apply(lambda x: int(x) if pd.notna(x) else x)

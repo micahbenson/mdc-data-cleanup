@@ -30,6 +30,10 @@ def people(df):
         "Phone Number",
         "Is Child", 
         "Family Role", 
+        "Relationship To Primary", 
+        "Highest Education Level",
+        "Birth State", 
+        "Birth City"
         ]]
     return people_df
 

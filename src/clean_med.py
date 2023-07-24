@@ -168,6 +168,30 @@ people["Age"] = people["Birthdate"].apply(age)
 #Remove numbers from children in family role
 people["Family Role"] = people["Family Role"].apply(lambda x: pd.NA if pd.isna(x) else str(x).split(" ")[0])
 
+people["Highest Education Level"] = people["Highest Education Level"].apply(
+    lambda x: 
+    "kindergarten" if "kinder" in str(x) else \
+    "primary" if "prim" in str(x) in str(x) else \
+    "secondary" if "sec" in str(x) else \
+    "university" if "uni" in str(x) else \
+    "preporatory" if "prep" in str(x) else \
+    "none" if "no" in str(x) else \
+    "other" if pd.notna(x) else x
+    )
+
+people["Relationship To Primary"] = people["Relationship To Primary"].apply(
+    lambda x: 
+    "child" if "hijo" in str(x) or "hija" in str(x) else \
+    "parent" if "padre" in str(x) or "madre" in str(x) else \
+    "sibling" if "hermano" in str(x) or "hermana" in str(x) else \
+    "grandparent" if "abuelo" in str(x) or "abuela" in str(x) else \
+    "grandchild" if "nieto" in str(x) or "nieta" in str(x) else \
+    "primary" if "primary" in str(x) else \
+    "spouse" if str(x) == "esposo" or str(x) == "esposa" else \
+    "nephew/niece" if "sobrino" in str(x) or "sobrina" in str(x) or "nice" in str(x) or "nephew" in str(x) else \
+    "other" if pd.notna(x) else x
+)
+
 #people["Is Child"] = np.where(people["Is Child"] == "yes", True, False)
 
 combined = med.reset_index().set_index("Individual Id").merge(people, on="Individual Id")
