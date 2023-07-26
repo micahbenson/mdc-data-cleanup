@@ -78,7 +78,7 @@ def clean_heart(df, name):
 
 def clean_flouride(df, name_list): 
     cols = df[name_list]
-    cols = cols.applymap(lambda x: "yes" if str(x) == "y" else "yes" if str(x) == "yes" else x)
+    cols = cols.applymap(lambda x: True if str(x) == "y" else True if str(x) == "yes" else False if "no" in str(x) else x)
     df[name_list] = cols
     return df
 
@@ -133,7 +133,7 @@ def clean_all(df):
     df = clean_fall_semester_2022(df, "Fall Semester 2022")
     df = clean_spring_semester_2023(df, "Spring Semester 2023")
     df = clean_summer_school_2022(df, "Summer School 2022")
-    df = clean_super_saturday(df, "Super Saturday")
+    #df = clean_super_saturday(df, "Super Saturday")
     df = clean_weight_loss(df, "Weight Loss")
     df = clean_2021_pic(df, "Attended Pic Day 2021")
     df = clean_dropout(df, "Dropped Out Of School", "Is Dropout")

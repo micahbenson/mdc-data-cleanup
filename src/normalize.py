@@ -33,7 +33,10 @@ def people(df):
         "Relationship To Primary", 
         "Highest Education Level",
         "Birth State", 
-        "Birth City"
+        "Birth City", 
+        "Super Saturday", 
+        "Feed A Family",
+        "Education Program",
         ]]
     return people_df
 

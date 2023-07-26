@@ -25,7 +25,7 @@ new["Date"] = new["Date"].dt.date
 new = new.set_index(["Individual Id", "Date"])
 
 all_new = new.drop(["Lung", "Heart", "Abdomen", "Pulse"], axis="columns")
-to_update = new.drop(["Blood Pressure 1", "Blood Pressure 2", "Blood Pressure 3", "Soda"], axis="columns")
+to_update = new.drop(["Blood Pressure Accurate", "Soda"], axis="columns")
 
 med = med.merge(all_new, on=["Individual Id", "Date"])
 med.update(to_update)
@@ -65,19 +65,19 @@ med["Bmi"] = med["Weight"] / (med["Height"]/100)**2
 med["Soda Sugar"] = med["Soda"] * 108 / 7
 
 #Clean glasses column 
-med["Glasses"] = med["Glasses"].apply(lambda x: "yes" if "y" in str(x) else "yes" if str(x).isnumeric() else "no")
+med["Glasses"] = med["Glasses"].apply(lambda x: True if "y" in str(x) else True if str(x).isnumeric() else False)
 
 #Clean Abdomen 
 med["Abdomen"] = med["Abdomen"].apply(lambda x: "healthy" if str(x) == "0" else x)
 
 #Clean Risk 
-med["Risk"] = med["Risk"].apply(lambda x: "yes" if str(x) == "risk" else x)
+#med["Risk"] = med["Risk"].apply(lambda x: "yes" if str(x) == "risk" else x)
 
 #Clean Rootips 
 med["Rootips"] = med["Rootips"].apply(lambda x: int(x) if pd.notna(x) else x)
 
 #Clean Safe Risk Smoke Alcohol Fast
-med[["Safe", "Risk", "Smoke", "Alcohol", "Fast"]] = med[["Safe", "Risk", "Smoke", "Alcohol", "Fast"]].applymap(lambda x: pd.NA if pd.isna(x) else "no" if "no" in str(x) else "yes")
+med[["Safe", "Risk", "Smoke", "Alcohol", "Fast"]] = med[["Safe", "Risk", "Smoke", "Alcohol", "Fast"]].applymap(lambda x: pd.NA if pd.isna(x) else False if "no" in str(x) else True)
 
 #Clean cavity risk
 med["Cavity Risk"] = med["Cavity Risk"].apply(lambda x: "medium" if "m" in str(x) else "medium" if "fair" in str(x) else x)
@@ -120,9 +120,7 @@ med = med[[
     "Pulse",
     "Heart",
     "Lung",
-    "Blood Pressure 1",
-    "Blood Pressure 2",
-    "Blood Pressure 3",	
+    "Blood Pressure Accurate",	
     "Blood Sugar",
     "Medication",
     "Vaccine",
@@ -192,6 +190,8 @@ people["Relationship To Primary"] = people["Relationship To Primary"].apply(
     "other" if pd.notna(x) else x
 )
 
+people[["Feed A Family", "Super Saturday", "Education Program"]] = people[["Feed A Family", "Super Saturday", "Education Program"]].applymap(lambda x: True if str(x) == "true" else False if str(x) == "false" else x)
+
 #people["Is Child"] = np.where(people["Is Child"] == "yes", True, False)
 
 combined = med.reset_index().set_index("Individual Id").merge(people, on="Individual Id")
@@ -211,7 +211,11 @@ people = people.drop([
     "Address", 
     "Phone Number", 
     "Is Child", 
-    "Birthdate"
+    "Birthdate",
+    "Family Role",
+    #"Super Saturday", 
+    #"Feed A Family", 
+    #"Education Program",
     ], 
     axis="columns")
 combined = combined.drop([
@@ -219,7 +223,11 @@ combined = combined.drop([
     "Address", 
     "Phone Number", 
     "Is Child", 
-    "Birthdate"
+    "Birthdate", 
+    "Family Role",
+    #"Super Saturday", 
+    #"Feed A Family", 
+    #"Education Program",
     ], 
     axis="columns")
 
