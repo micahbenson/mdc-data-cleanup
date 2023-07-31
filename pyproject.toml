@@ -15,10 +15,12 @@ sklearn = "^0.0.post5"
 pytest = "^7.3.1"
 seaborn = "^0.12.2"
 ydata-profiling = "^4.3.2"
+pandoc = "^2.3"
 
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.23.1"
+notebook = "^7.0.0"
 
 [build-system]
 requires = ["poetry-core"]
