@@ -164,7 +164,7 @@ people["Birthdate"] = pd.to_datetime(people["Birthdate"]).dt.date
 people["Age"] = people["Birthdate"].apply(age)
 
 #Remove numbers from children in family role
-people["Family Role"] = people["Family Role"].apply(lambda x: pd.NA if pd.isna(x) else str(x).split(" ")[0])
+#people["Family Role"] = people["Family Role"].apply(lambda x: pd.NA if pd.isna(x) else str(x).split(" ")[0])
 
 people["Highest Education Level"] = people["Highest Education Level"].apply(
     lambda x: 
@@ -207,24 +207,24 @@ combined["Age At Fair"] = dates.apply(lambda x: age_combined(x["Date"], x["Birth
 combined = combined.reset_index().set_index(["Individual Id", "Date"]).sort_values(["Date", "Individual Id"])
 
 people = people.drop([
-    "Name", 
-    "Address", 
-    "Phone Number", 
+    #"Name", 
+   # "Address", 
+   # "Phone Number", 
     "Is Child", 
-    "Birthdate",
-    "Family Role",
+    #"Birthdate",
+    #"Family Role",
     #"Super Saturday", 
     #"Feed A Family", 
     #"Education Program",
     ], 
     axis="columns")
 combined = combined.drop([
-    "Name", 
-    "Address", 
-    "Phone Number", 
+    #"Name", 
+    #"Address", 
+    #"Phone Number", 
     "Is Child", 
-    "Birthdate", 
-    "Family Role",
+    #"Birthdate", 
+    #"Family Role",
     #"Super Saturday", 
     #"Feed A Family", 
     #"Education Program",
