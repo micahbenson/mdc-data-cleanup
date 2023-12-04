@@ -5,3 +5,7 @@ med.csv
 people.csv
 combined.csv
 data
+mdc
+notebooks
+**/.DS_Store
+**/__pycache__/

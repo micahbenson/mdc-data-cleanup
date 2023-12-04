@@ -164,6 +164,6 @@ def clean_all(df):
 
     return df
 
-data = pd.read_excel('/Users/micahbenson/mdc/mdc_nikita.xlsx', sheet_name="mdc_nikita", dtype=str)
+data = pd.read_excel('../mdc/mdc_nikita.xlsx', sheet_name="mdc_nikita", dtype=str)
 
 df = clean_all(data)

@@ -311,7 +311,7 @@ def normalize_all(df):
     return people_df, school_df, med_fairs
 
 
-data = pd.read_excel('/Users/micahbenson/mdc/mdc_nikita.xlsx', sheet_name="mdc_nikita", dtype=str)
+data = pd.read_excel('../mdc/mdc_nikita.xlsx', sheet_name="mdc_nikita", dtype=str)
 
 #normalize_all(data)
 

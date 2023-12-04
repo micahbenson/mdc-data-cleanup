@@ -4,7 +4,7 @@ import normalize
 import clean
 import datetime
 
-data = pd.read_excel('/Users/micahbenson/mdc/mdc_nikita.xlsx', sheet_name="mdc_nikita", dtype=str)
+data = pd.read_excel('../mdc/mdc_nikita.xlsx', sheet_name="mdc_nikita", dtype=str)
 
 people, school, med = normalize.normalize_all(data)
 
@@ -18,7 +18,7 @@ med = med.sort_values(["Date", "Individual Id"])
 
 med = med.set_index(["Individual Id", "Date"])
 
-new = pd.read_excel('/Users/micahbenson/mdc/Altered_Cols.xlsx')
+new = pd.read_excel('../mdc/Altered_Cols.xlsx')
 
 new["Date"] = new["Date"].dt.date
 
